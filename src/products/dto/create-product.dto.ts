@@ -16,6 +16,7 @@ export class CreateProductDto {
   title: string;
 
   @IsNumber()
+  @IsOptional()
   price?: number;
 
   @IsString()
@@ -35,6 +36,6 @@ export class CreateProductDto {
   @IsArray()
   sizes: string[];
 
-  @IsIn(['men', 'wowen', 'kid', 'unisex'])
+  @IsIn(['men', 'women', 'kid', 'unisex'])
   gender: string;
 }
