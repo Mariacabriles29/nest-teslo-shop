@@ -10,6 +10,7 @@ import { UpdateProductDto } from './dto/update-product.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Product } from './entities/product.entity';
+import { PaginationDto } from 'src/common/dtos/pagination.dto';
 
 @Injectable()
 export class ProductsService {
@@ -34,9 +35,16 @@ export class ProductsService {
   }
 
   //para comenzar a hacer el get poder ver todos los datos insertados en la base de datos
-  //Todo falta paginar
-  findAll() {
-    return this.productRepository.find({});
+  //agregando lo datos para la paginacion
+  findAll(paginationDto: PaginationDto) {
+    const { limit = 10, offset = 0 } = paginationDto;
+
+    return this.productRepository.find({
+      take: limit,
+      skip: offset,
+
+      //TODO Relaciones
+    });
   }
   //para buscar por id
   async findOne(id: string) {
