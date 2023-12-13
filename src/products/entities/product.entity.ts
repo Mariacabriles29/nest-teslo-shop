@@ -5,7 +5,7 @@ export class Product {
   //se declaran las variables con las propiedades de typeorm
   @PrimaryGeneratedColumn('uuid')
   id: string;
-  //se usa el deoorador column para definir las columnas
+  //se usa column para definir las columnas
   @Column('text', {
     unique: true,
   })
