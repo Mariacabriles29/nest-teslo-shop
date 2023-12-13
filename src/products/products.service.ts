@@ -3,6 +3,7 @@ import {
   Injectable,
   InternalServerErrorException,
   Logger,
+  NotFoundException,
 } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
@@ -32,20 +33,28 @@ export class ProductsService {
     }
   }
 
+  //para comenzar a hacer el get poder ver todos los datos insertados en la base de datos
+  //Todo falta paginar
   findAll() {
-    return `This action returns all products`;
+    return this.productRepository.find({});
   }
+  //para buscar por id
+  async findOne(id: string) {
+    const product = await this.productRepository.findOneBy({ id });
+    if (!product)
+      throw new NotFoundException(`Product with id ${id} not found`);
 
-  findOne(id: number) {
-    return `This action returns a #${id} product`;
+    return product;
   }
 
   update(id: number, updateProductDto: UpdateProductDto) {
     return `This action updates a #${id} product`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} product`;
+  async remove(id: string) {
+    const product = await this.findOne(id);
+
+    await this.productRepository.remove(product);
   }
   //se crea este metodo para manejar los errores
   private handleDBExceptions(error: any) {
