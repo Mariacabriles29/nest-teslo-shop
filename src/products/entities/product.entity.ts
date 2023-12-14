@@ -46,6 +46,13 @@ export class Product {
   gender: string;
 
   //tags
+
+  @Column('text', {
+    array: true,
+    default: [],
+  })
+  tags: string[];
+
   //images
 
   //se usa el BeforeInsert para que antes de insertarlo revise el slug sino existe lo replace por lo que tiene el titulo
