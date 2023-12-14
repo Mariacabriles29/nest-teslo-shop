@@ -59,7 +59,7 @@ export class Product {
   @OneToMany(() => ProductImage, (productImage) => productImage.product, {
     cascade: true,
   })
-  images?: ProductImage;
+  images?: ProductImage[];
 
   //se usa el BeforeInsert para que antes de insertarlo revise el slug sino existe lo replace por lo que tiene el titulo
   @BeforeInsert()
