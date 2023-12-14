@@ -56,7 +56,7 @@ export class ProductsService {
     } else {
       const queryBuilder = this.productRepository.createQueryBuilder();
       product = await queryBuilder
-        //uso LOWER para convertir la cedena minuscula y a su vez la consulta se vuelve sensible a mayus y minusculas es decir puedo buscar por las dos e igual si
+        //uso LOWER para convertir la cedena minuscula y a su vez la consulta se vuelve sensible a mayus y minusculas es decir puedo buscar por las dos e igual sigue
         //funcionano
         .where('LOWER(title) = LOWER(:title) OR LOWER(slug) = LOWER(:slug)', {
           title: term,
@@ -74,9 +74,23 @@ export class ProductsService {
     return product;
   }
 
-  update(id: number, updateProductDto: UpdateProductDto) {
-    return `This action updates a #${id} product`;
+  async update(id: string, updateProductDto: UpdateProductDto) {
+    const product = await this.productRepository.preload({
+      id: id,
+      ...updateProductDto,
+    });
+
+    if (!product)
+      throw new NotFoundException(`Product with id: ${id} not found`);
+
+    try {
+      await this.productRepository.save(product);
+      return product;
+    } catch (error) {
+      this.handleDBExceptions(error);
+    }
   }
+
   async remove(id: string) {
     const product = await this.findOne(id);
 
