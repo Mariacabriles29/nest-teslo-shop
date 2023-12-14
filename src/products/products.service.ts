@@ -54,10 +54,20 @@ export class ProductsService {
     if (isUUID(term)) {
       product = await this.productRepository.findOneBy({ id: term });
     } else {
-      product = await this.productRepository.findOneBy({ slug: term });
+      const queryBuilder = this.productRepository.createQueryBuilder();
+      product = await queryBuilder
+        //uso LOWER para convertir la cedena minuscula y a su vez la consulta se vuelve sensible a mayus y minusculas es decir puedo buscar por las dos e igual si
+        //funcionano
+        .where('LOWER(title) = LOWER(:title) OR LOWER(slug) = LOWER(:slug)', {
+          title: term,
+          slug: term,
+          //Uso getOne() para indicar que solo me interesa alguno de los dos
+        })
+        .getOne();
     }
 
-    // const product = await this.productRepository.findOneBy({ id  });
+    //esto es parecido a hacer un select `select *from Products where slug='XX' or title='xxx'`
+
     if (!product)
       throw new NotFoundException(`Product with id ${term} not found`);
 
