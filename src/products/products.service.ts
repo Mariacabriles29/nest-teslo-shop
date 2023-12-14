@@ -47,15 +47,21 @@ export class ProductsService {
 
   //para comenzar a hacer el get poder ver todos los datos insertados en la base de datos
   //agregando lo datos para la paginacion
-  findAll(paginationDto: PaginationDto) {
+  async findAll(paginationDto: PaginationDto) {
     const { limit = 10, offset = 0 } = paginationDto;
 
-    return this.productRepository.find({
+    const products = await this.productRepository.find({
       take: limit,
       skip: offset,
-
       //TODO Relaciones
+      relations: {
+        images: true,
+      },
     });
+    return products.map((product) => ({
+      ...product,
+      images: product.images.map((img) => img.url),
+    }));
   }
   // para buscar por slug o id
   async findOne(term: string) {
@@ -64,7 +70,7 @@ export class ProductsService {
     if (isUUID(term)) {
       product = await this.productRepository.findOneBy({ id: term });
     } else {
-      const queryBuilder = this.productRepository.createQueryBuilder();
+      const queryBuilder = this.productRepository.createQueryBuilder('prod');
       product = await queryBuilder
         //uso LOWER para convertir la cedena minuscula y a su vez la consulta se vuelve sensible a mayus y minusculas es decir puedo buscar por las dos e igual sigue
         //funcionano
@@ -73,6 +79,7 @@ export class ProductsService {
           slug: term,
           //Uso getOne() para indicar que solo me interesa alguno de los dos
         })
+        .leftJoinAndSelect('prod.images', 'prodImages')
         .getOne();
     }
 
@@ -82,6 +89,13 @@ export class ProductsService {
       throw new NotFoundException(`Product with id ${term} not found`);
 
     return product;
+  }
+  async findOnePlain(term: string) {
+    const { images = [], ...rest } = await this.findOne(term);
+    return {
+      ...rest,
+      images: images.map((image) => image.url),
+    };
   }
 
   async update(id: string, updateProductDto: UpdateProductDto) {
