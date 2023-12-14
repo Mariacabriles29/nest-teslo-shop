@@ -3,8 +3,10 @@ import {
   BeforeUpdate,
   Column,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { ProductImage } from './product-image.entity';
 
 @Entity()
 export class Product {
@@ -53,7 +55,11 @@ export class Product {
   })
   tags: string[];
 
-  //images
+  //relacion uno a mucho un producto puede tener muchas images
+  @OneToMany(() => ProductImage, (productImage) => productImage.product, {
+    cascade: true,
+  })
+  images?: ProductImage;
 
   //se usa el BeforeInsert para que antes de insertarlo revise el slug sino existe lo replace por lo que tiene el titulo
   @BeforeInsert()
