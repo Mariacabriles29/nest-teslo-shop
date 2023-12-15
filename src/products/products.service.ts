@@ -141,6 +141,7 @@ export class ProductsService {
 
     await this.productRepository.remove(product);
   }
+
   //se crea este metodo para manejar los errores
   private handleDBExceptions(error: any) {
     if (error.code === '23505') throw new BadRequestException(error.detail);
@@ -149,5 +150,14 @@ export class ProductsService {
     throw new InternalServerErrorException(
       'Unexpected error, check server logs',
     );
+  }
+  //delete de todos los registros, lo voy emplear cuando cree mi semilla
+  async deleteAllProducts() {
+    const query = this.productRepository.createQueryBuilder('product');
+    try {
+      return await query.delete().where({}).execute();
+    } catch (error) {
+      this.handleDBExceptions(error);
+    }
   }
 }
