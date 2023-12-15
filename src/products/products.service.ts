@@ -154,6 +154,7 @@ export class ProductsService {
   //delete de todos los registros, lo voy emplear cuando cree mi semilla
   async deleteAllProducts() {
     const query = this.productRepository.createQueryBuilder('product');
+
     try {
       return await query.delete().where({}).execute();
     } catch (error) {
