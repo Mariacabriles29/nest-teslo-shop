@@ -6,6 +6,8 @@ import { CommonModule } from './common/common.module';
 import { SeedModule } from './seed/seed.module';
 import { FilesModule } from './files/files.module';
 import { fileFilter } from './files/helpers/fileFilter.helpers';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -22,6 +24,9 @@ import { fileFilter } from './files/helpers/fileFilter.helpers';
 
       //sincroniza las columnas de la tabla automaticamente
       synchronize: true,
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'public'),
     }),
     ProductsModule,
     CommonModule,
