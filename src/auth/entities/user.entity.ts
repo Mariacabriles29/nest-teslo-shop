@@ -12,7 +12,9 @@ export class User {
   password: string;
   @Column('text')
   fullName: string;
-  @Column('bool')
+  @Column('bool', {
+    default: true,
+  })
   isActive: boolean;
 
   @Column('text', {
