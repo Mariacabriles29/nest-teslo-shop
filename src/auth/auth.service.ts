@@ -35,7 +35,7 @@ export class AuthService {
       await this.userRepository.save(user);
       ///para que no me muestre la contraseña
       delete user.password;
-      return { ...user, token: this.getJwtToken({ email: user.email }) };
+      return { ...user, token: this.getJwtToken({ id: user.id }) };
       //Todo  retornar el JWT de acceso
     } catch (error) {
       this.handleDBErrors(error);
@@ -56,7 +56,7 @@ export class AuthService {
     if (!bcrypt.compareSync(password, user.password))
       throw new UnauthorizedException('Credentials are not valid (password)');
     //TODO: Retornar el JWT acceso
-    return { ...user, token: this.getJwtToken({ email: user.email }) };
+    return { ...user, token: this.getJwtToken({ id: user.id }) };
   }
   private getJwtToken(payload: JwTPayload) {
     //para generar el token y firmarlo
