@@ -58,6 +58,11 @@ export class AuthService {
     //TODO: Retornar el JWT acceso
     return { ...user, token: this.getJwtToken({ id: user.id }) };
   }
+
+  async checkAuthStatus(user: User) {
+    return { ...user, token: this.getJwtToken({ id: user.id }) };
+  }
+
   private getJwtToken(payload: JwTPayload) {
     //para generar el token y firmarlo
 
